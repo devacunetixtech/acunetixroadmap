@@ -167,13 +167,14 @@
             display: block;
         }
 
+        /* --- THIS IS THE NEW STYLING YOU WERE MISSING --- */
         .day-item {
             display: grid;
-            grid-template-columns: 60px 100px 1fr 100px;
+            grid-template-columns: 100px 1fr 100px; /* Day Info | Details | Checkbox */
             gap: 15px;
             padding: 15px;
             border-bottom: 1px solid #e9ecef;
-            align-items: center;
+            align-items: start;
             transition: background 0.2s;
         }
 
@@ -183,6 +184,12 @@
 
         .day-item:last-child {
             border-bottom: none;
+        }
+
+        .day-info {
+            display: flex;
+            flex-direction: column;
+            padding-top: 5px;
         }
 
         .day-number {
@@ -196,14 +203,37 @@
             font-size: 0.9em;
         }
 
-        .day-task {
-            color: #333;
+        .day-details {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
+
+        .detail-item {
+            margin-bottom: 8px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .detail-text {
+            color: #333;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        /* --- END OF NEW STYLING --- */
 
         .checkbox-container {
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 100%;
+            align-self: center;
         }
 
         .checkbox {
@@ -335,9 +365,22 @@
 
         @media (max-width: 768px) {
             .day-item {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 80px; /* Stack info and details, keep checkbox separate */
+                gap: 10px;
             }
-            
+            .day-info {
+                grid-column: 1 / 2;
+                grid-row: 1 / 2;
+            }
+            .day-details {
+                grid-column: 1 / 2;
+                grid-row: 2 / 3;
+            }
+            .checkbox-container {
+                grid-column: 2 / 3;
+                grid-row: 1 / 3; /* Span both rows */
+                align-self: center;
+            }
             .stats-grid {
                 grid-template-columns: 1fr;
             }
@@ -387,7 +430,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Acunetix Backend Eng Journey</h1>
+            <h1>🚀 Backend Developer Journey</h1>
             <p>77 Days to Job-Ready Status | Track Your Progress Daily</p>
         </div>
 
@@ -513,7 +556,7 @@
                     <ul class="project-checklist">
                         <li><input type="checkbox" class="checkbox" onchange="updateProjectStatus('project6', this)"> Architecture designed</li>
                         <li><input type="checkbox" class="checkbox" onchange="updateProjectStatus('project6', this)"> Backend complete</li>
-                        <li><input type="checkbox" class="checkbox" onchange="updateProjectStatus('project6', this)"> Advanced features</li>
+                        <li><input type="checkbox" class_model="checkbox" onchange="updateProjectStatus('project6', this)"> Advanced features</li>
                         <li><input type="checkbox" class="checkbox" onchange="updateProjectStatus('project6', this)"> Testing & optimization</li>
                         <li><input type="checkbox" class="checkbox" onchange="updateProjectStatus('project6', this)"> CI/CD pipeline</li>
                         <li><input type="checkbox" class="checkbox" onchange="updateProjectStatus('project6', this)"> Deployed with demo</li>
@@ -633,115 +676,116 @@
     </div>
 
     <script>
+        // --- NEW weekData, PARSED FROM YOUR ROADMAP ---
         const weekData = [
             {week: 1, days: [
-                {day: 1, name: 'Monday', task: 'GraphQL basics, schema, types'},
-                {day: 2, name: 'Tuesday', task: 'Mutations, variables, fragments'},
-                {day: 3, name: 'Wednesday', task: 'Resolvers, context, MongoDB'},
-                {day: 4, name: 'Thursday', task: 'DataLoader, N+1 problem'},
-                {day: 5, name: 'Friday', task: 'Error handling, validation'}
+                {day: 1, name: 'Monday', learning: 'GraphQL basics, schema, types, queries (2 hours)', practice: 'Set up Apollo Server, create first schema (1.5 hours)', goal: 'Understand GraphQL vs REST, basic schema design', resources: 'How to GraphQL intro sections'},
+                {day: 2, name: 'Tuesday', learning: 'Mutations, query variables, fragments (1.5 hours)', practice: 'Build CRUD operations for a simple Todo API (2 hours)', goal: 'Create, read, update, delete operations in GraphQL', resources: null},
+                {day: 3, name: 'Wednesday', learning: 'Resolvers deep dive, context, arguments (1.5 hours)', practice: 'Implement resolvers with MongoDB connection (2 hours)', goal: 'Connect GraphQL to MongoDB database', resources: null},
+                {day: 4, name: 'Thursday', learning: 'DataLoader and N+1 problem (2 hours)', practice: 'Implement DataLoader in your Todo API (1.5 hours)', goal: 'Understand and solve performance issues', resources: null},
+                {day: 5, name: 'Friday', learning: 'GraphQL error handling and validation (1 hour)', practice: 'Add proper error handling and input validation (2.5 hours)', goal: 'Production-ready error management', resources: null}
             ]},
             {week: 2, days: [
-                {day: 6, name: 'Monday', task: 'JWT authentication'},
-                {day: 7, name: 'Tuesday', task: 'Auth middleware, protect routes'},
-                {day: 8, name: 'Wednesday', task: 'GraphQL subscriptions'},
-                {day: 9, name: 'Thursday', task: 'Blog Platform - Part 1'},
-                {day: 10, name: 'Friday', task: 'Blog Platform - Complete & Deploy'}
+                {day: 6, name: 'Monday', learning: 'JWT authentication concepts (2 hours)', practice: 'Set up user registration and login (2 hours)', goal: 'Implement JWT-based authentication', resources: null},
+                {day: 7, name: 'Tuesday', learning: 'GraphQL context and authentication middleware (1 hour)', practice: 'Protect routes, add auth middleware (2.5 hours)', goal: 'Secure GraphQL endpoints', resources: null},
+                {day: 8, name: 'Wednesday', learning: 'GraphQL subscriptions and WebSockets (2 hours)', practice: 'Set up subscription server (1.5 hours)', goal: 'Understand real-time GraphQL', resources: null},
+                {day: 9, name: 'Thursday', learning: 'Project Day (3.5 hours)', practice: 'Start Blog Platform: User registration/login, Create post mutation, Query all posts', goal: 'Build foundation of week\'s capstone project', resources: null},
+                {day: 10, name: 'Friday', learning: 'Project Day (3.5 hours)', practice: 'Complete Blog Platform: Comments, Likes, Real-time notifications, Deploy', goal: 'Document project, push to GitHub', resources: null}
             ]},
             {week: 3, days: [
-                {day: 11, name: 'Monday', task: 'MongoDB aggregation basics'},
-                {day: 12, name: 'Tuesday', task: 'Advanced aggregation'},
-                {day: 13, name: 'Wednesday', task: 'Indexing strategies'},
-                {day: 14, name: 'Thursday', task: 'Mongoose advanced features'},
-                {day: 15, name: 'Friday', task: 'Database design patterns'}
+                {day: 11, name: 'Monday', learning: 'MongoDB aggregation pipeline basics (2 hours)', practice: 'Write 10 different aggregation queries (2 hours)', goal: 'Master $match, $group, $project, $sort', resources: 'MongoDB University M121'},
+                {day: 12, name: 'Tuesday', learning: 'Advanced aggregation ($lookup, $unwind, $facet) (2 hours)', practice: 'Complex multi-collection queries (1.5 hours)', goal: 'Handle relationships and complex data transformations', resources: null},
+                {day: 13, name: 'Wednesday', learning: 'MongoDB indexing strategies (1.5 hours)', practice: 'Create indexes, analyze query performance (2 hours)', goal: 'Optimize database queries with proper indexing', resources: null},
+                {day: 14, name: 'Thursday', learning: 'Mongoose advanced features (2 hours)', practice: 'Implement virtuals, middleware, custom methods (2 hours)', goal: 'Level up Mongoose schema design', resources: null},
+                {day: 15, name: 'Friday', learning: 'Database design patterns and best practices (1.5 hours)', practice: 'Refactor previous projects with better schema design (2 hours)', goal: 'Understand embedded vs referenced data', resources: null}
             ]},
             {week: 4, days: [
-                {day: 16, name: 'Monday', task: 'PostgreSQL basics'},
-                {day: 17, name: 'Tuesday', task: 'SQL joins, relationships'},
-                {day: 18, name: 'Wednesday', task: 'Redis caching'},
-                {day: 19, name: 'Thursday', task: 'E-commerce Backend - Part 1'},
-                {day: 20, name: 'Friday', task: 'E-commerce Backend - Complete'}
+                {day: 16, name: 'Monday', learning: 'PostgreSQL basics, SQL fundamentals (2 hours)', practice: 'Set up PostgreSQL, basic CRUD operations (2 hours)', goal: 'Understand relational database concepts', resources: 'PostgreSQL Tutorial'},
+                {day: 17, name: 'Tuesday', learning: 'SQL joins, relationships, foreign keys (2 hours)', practice: 'Design e-commerce database schema (1.5 hours)', goal: 'Master table relationships', resources: null},
+                {day: 18, name: 'Wednesday', learning: 'Introduction to Redis caching (1 hour)', practice: 'Set up Redis, implement basic caching (3 hours)', goal: 'Understand when and how to cache data', resources: null},
+                {day: 19, name: 'Thursday', learning: 'Project Day (3.5 hours)', practice: 'E-commerce Backend - Part 1: User auth, Product catalog (PostgreSQL), Category management', goal: 'Build core e-commerce functionality', resources: null},
+                {day: 20, name: 'Friday', learning: 'Project Day (3.5 hours)', practice: 'E-commerce Backend - Part 2: Shopping cart, Order management, Inventory tracking, Redis caching', goal: 'Deploy project, update GitHub', resources: null}
             ]},
             {week: 5, days: [
-                {day: 21, name: 'Monday', task: 'OWASP Top 10 security'},
-                {day: 22, name: 'Tuesday', task: 'OAuth 2.0, social login'},
-                {day: 23, name: 'Wednesday', task: 'RBAC implementation'},
-                {day: 24, name: 'Thursday', task: 'Rate limiting'},
-                {day: 25, name: 'Friday', task: 'Input validation & sanitization'}
+                {day: 21, name: 'Monday', learning: 'OWASP Top 10 security risks (2 hours)', practice: 'Audit previous projects for vulnerabilities (2 hours)', goal: 'Identify and fix common security issues', resources: null},
+                {day: 22, name: 'Tuesday', learning: 'OAuth 2.0 and social login (Google, GitHub) (2 hours)', practice: 'Implement OAuth with Passport.js (1.5 hours)', goal: 'Add social authentication to a project', resources: null},
+                {day: 23, name: 'Wednesday', learning: 'Role-Based Access Control (RBAC) (1.5 hours)', practice: 'Design and implement permission system (2 hours)', goal: 'Create flexible authorization system', resources: null},
+                {day: 24, name: 'Thursday', learning: 'API rate limiting and throttling (2 hours)', practice: 'Implement rate limiting with express-rate-limit (1.5 hours)', goal: 'Protect APIs from abuse', resources: null},
+                {day: 25, name: 'Friday', learning: 'Input validation and sanitization (1 hour)', practice: 'Add validation to all endpoints (Joi/Zod) (2.5 hours)', goal: 'Production-grade input handling', resources: null}
             ]},
             {week: 6, days: [
-                {day: 26, name: 'Monday', task: 'Multi-tenancy patterns'},
-                {day: 27, name: 'Tuesday', task: 'SaaS API - Part 1'},
-                {day: 28, name: 'Wednesday', task: 'SaaS API - Part 2'},
-                {day: 29, name: 'Thursday', task: 'SaaS API - Part 3'},
-                {day: 30, name: 'Friday', task: 'SaaS API - Complete & Deploy'}
+                {day: 26, name: 'Monday', learning: 'Multi-tenancy patterns and architecture (2 hours)', practice: 'Design multi-tenant database schema (2 hours)', goal: 'Understand tenant isolation strategies', resources: null},
+                {day: 27, name: 'Tuesday', learning: 'Project Day (3.5 hours)', practice: 'SaaS API - Part 1: User registration with email verification, Organization/workspace creation, Invite system', goal: 'Build multi-tenant foundation', resources: null},
+                {day: 28, name: 'Wednesday', learning: 'Project Day (3.5 hours)', practice: 'SaaS API - Part 2: Fine-grained permissions (owner, admin, member), Resource-level access control', goal: 'Implement RBAC for tenants', resources: null},
+                {day: 29, name: 'Thursday', learning: 'Project Day (3.5 hours)', practice: 'SaaS API - Part 3: API key management, Rate limiting per tenant, Usage tracking', goal: 'Enterprise-ready API features', resources: null},
+                {day: 30, name: 'Friday', learning: 'Project Day (3.5 hours)', practice: 'SaaS API - Part 4: Audit logging, Admin dashboard endpoints, Deploy and document', goal: 'Polish README, create API documentation', resources: null}
             ]},
             {week: 7, days: [
-                {day: 31, name: 'Monday', task: 'Testing fundamentals'},
-                {day: 32, name: 'Tuesday', task: 'Unit testing'},
-                {day: 33, name: 'Wednesday', task: 'Integration testing'},
-                {day: 34, name: 'Thursday', task: 'Test databases & mocking'},
-                {day: 35, name: 'Friday', task: 'Add tests to all projects'}
+                {day: 31, name: 'Monday', learning: 'Testing fundamentals, test pyramid (2 hours)', practice: 'Set up Jest, write first unit tests (2 hours)', goal: 'Understand different types of testing', resources: null},
+                {day: 32, name: 'Tuesday', learning: 'Unit testing best practices (1.5 hours)', practice: 'Write unit tests for utility functions and services (2 hours)', goal: 'Achieve 70%+ unit test coverage', resources: null},
+                {day: 33, name: 'Wednesday', learning: 'Integration testing with Supertest (1.5 hours)', practice: 'Write integration tests for API endpoints (2 hours)', goal: 'Test complete request/response cycles', resources: null},
+                {day: 34, name: 'Thursday', learning: 'Test database setup and mocking (1 hour)', practice: 'Test database operations, mock external APIs (2.5 hours)', goal: 'Isolate tests from external dependencies', resources: null},
+                {day: 35, name: 'Friday', learning: 'Practice Day (3.5 hours)', practice: 'Add tests to all previous projects (Blog, E-commerce, SaaS)', goal: 'All projects with 70%+ test coverage', resources: null}
             ]},
             {week: 8, days: [
-                {day: 36, name: 'Monday', task: 'Docker fundamentals'},
-                {day: 37, name: 'Tuesday', task: 'Docker Compose'},
-                {day: 38, name: 'Wednesday', task: 'GitHub Actions, CI/CD'},
-                {day: 39, name: 'Thursday', task: 'Cloud deployment'},
-                {day: 40, name: 'Friday', task: 'Deploy all projects'}
+                {day: 36, name: 'Monday', learning: 'Docker fundamentals (2 hours)', practice: 'Create Dockerfile for Node.js app (2 hours)', goal: 'Containerize one project', resources: null},
+                {day: 37, name: 'Tuesday', learning: 'Docker Compose for multi-container apps (1.5 hours)', practice: 'Create docker-compose.yml with DB and Redis (2 hours)', goal: 'Local development with Docker', resources: null},
+                {day: 38, name: 'Wednesday', learning: 'GitHub Actions and CI/CD concepts (2 hours)', practice: 'Create first GitHub Actions workflow (1.5 hours)', goal: 'Automate testing on push', resources: null},
+                {day: 39, name: 'Thursday', learning: 'Cloud deployment (AWS/Railway/Render) (1 hour)', practice: 'Deploy one project with CI/CD pipeline (Auto-deploy, tests, env vars) (3 hours)', goal: 'Fully automated deployment', resources: null},
+                {day: 40, name: 'Friday', learning: 'Practice Day (3.5 hours)', practice: 'Deploy all projects: Dockerize, CI/CD, health checks, logging', goal: 'All projects live with custom domains', resources: null}
             ]},
             {week: 9, days: [
-                {day: 41, name: 'Monday', task: 'Microservices architecture'},
-                {day: 42, name: 'Tuesday', task: 'Message queues (Bull)'},
-                {day: 43, name: 'Wednesday', task: 'Event-driven architecture'},
-                {day: 44, name: 'Thursday', task: 'Task System - Part 1'},
-                {day: 45, name: 'Friday', task: 'Task System - Part 2'}
+                {day: 41, name: 'Monday', learning: 'Microservices architecture patterns (2.5 hours)', practice: 'Design microservices for task management system (1 hour)', goal: 'Understand service decomposition', resources: 'Microservices.io patterns'},
+                {day: 42, name: 'Tuesday', learning: 'Message queues (RabbitMQ/Bull) (2 hours)', practice: 'Set up Bull queue with Redis (2 hours)', goal: 'Implement async job processing', resources: null},
+                {day: 43, name: 'Wednesday', learning: 'Event-driven architecture (2 hours)', practice: 'Implement pub/sub pattern (1.5 hours)', goal: 'Decouple services with events', resources: null},
+                {day: 44, name: 'Thursday', learning: 'Project Day (3.5 hours)', practice: 'Task Management System - Part 1: User service (auth), Task service (CRUD), API Gateway setup', goal: 'Build initial microservices', resources: null},
+                {day: 45, name: 'Friday', learning: 'Project Day (3.5 hours)', practice: 'Task Management System - Part 2: Notification service, Message queue for email, Service-to-service communication', goal: 'Document microservices architecture', resources: null}
             ]},
             {week: 10, days: [
-                {day: 46, name: 'Monday', task: 'System design fundamentals'},
-                {day: 47, name: 'Tuesday', task: 'Caching strategies'},
-                {day: 48, name: 'Wednesday', task: 'REST vs GraphQL vs gRPC'},
-                {day: 49, name: 'Thursday', task: 'Load balancing, nginx'},
-                {day: 50, name: 'Friday', task: 'Complete Task System + Deploy'}
+                {day: 46, name: 'Monday', learning: 'System design fundamentals (2 hours)', practice: 'Design URL shortener, Twitter feed (2 hours)', goal: 'Practice common system design questions', resources: 'System Design Primer GitHub'},
+                {day: 47, name: 'Tuesday', learning: 'Caching strategies (cache-aside, write-through) (2 hours)', practice: 'Implement advanced caching in projects (1.5 hours)', goal: 'Optimize with multi-layer caching', resources: null},
+                {day: 48, name: 'Wednesday', learning: 'REST vs GraphQL vs gRPC comparison (2 hours)', practice: 'Convert one REST endpoint to gRPC (1.5 hours)', goal: 'Understand when to use each protocol', resources: null},
+                {day: 49, name: 'Thursday', learning: 'Load balancing and scaling concepts (2 hours)', practice: 'Set up nginx as reverse proxy (1.5 hours)', goal: 'Understand horizontal scaling', resources: null},
+                {day: 50, name: 'Friday', learning: 'Project Day (3.5 hours)', practice: 'Complete Task System: Add Redis, circuit breaker, monitoring, logging, deploy', goal: 'Create architecture diagram', resources: null}
             ]},
             {week: 11, days: [
-                {day: 51, name: 'Monday', task: 'Node.js performance profiling'},
-                {day: 52, name: 'Tuesday', task: 'Database query optimization'},
-                {day: 53, name: 'Wednesday', task: 'Load testing with Artillery'},
-                {day: 54, name: 'Thursday', task: 'Optimization sprint'},
-                {day: 55, name: 'Friday', task: 'Add monitoring to all projects'}
+                {day: 51, name: 'Monday', learning: 'Node.js performance profiling (1.5 hours)', practice: 'Profile and optimize one project (2 hours)', goal: 'Identify and fix bottlenecks', resources: null},
+                {day: 52, name: 'Tuesday', learning: 'Database query optimization techniques (1.5 hours)', practice: 'Optimize slow queries with EXPLAIN (2 hours)', goal: '10x query performance improvements', resources: null},
+                {day: 53, name: 'Wednesday', learning: 'Load testing with Artillery (1 hour)', practice: 'Load test all projects, fix issues (2.5 hours)', goal: 'Handle 1000+ requests/second', resources: null},
+                {day: 54, name: 'Thursday', learning: 'Practice Day (3.5 hours)', practice: 'Optimization Sprint: Add indexes, connection pooling, optimize operations, add CDN', goal: 'Measurable performance improvements', resources: null},
+                {day: 55, name: 'Friday', learning: 'Practice Day (3.5 hours)', practice: 'Add monitoring: Sentry, performance monitoring, dashboards, document results', goal: 'Write blog post about performance optimization', resources: null}
             ]},
             {week: 12, days: [
-                {day: 56, name: 'Monday', task: 'TypeScript fundamentals'},
-                {day: 57, name: 'Tuesday', task: 'Advanced TypeScript'},
-                {day: 58, name: 'Wednesday', task: 'Node.js streams & buffers'},
-                {day: 59, name: 'Thursday', task: 'Worker threads & clustering'},
-                {day: 60, name: 'Friday', task: 'Real-time Chat Application'}
+                {day: 56, name: 'Monday', learning: 'TypeScript fundamentals (2 hours)', practice: 'Set up TypeScript in Node.js project (2 hours)', goal: 'Understand types, interfaces, generics', resources: null},
+                {day: 57, name: 'Tuesday', learning: 'Advanced TypeScript patterns (1.5 hours)', practice: 'Convert one project to TypeScript (2 hours)', goal: 'Type-safe backend code', resources: null},
+                {day: 58, name: 'Wednesday', learning: 'Node.js streams and buffers (2 hours)', practice: 'Build file upload/processing system (1.5 hours)', goal: 'Handle large files efficiently', resources: null},
+                {day: 59, name: 'Thursday', learning: 'Worker threads and clustering (2 hours)', practice: 'Implement CPU-intensive task processing (1.5 hours)', goal: 'Utilize multi-core systems', resources: null},
+                {day: 60, name: 'Friday', learning: 'Project Day (3.5 hours)', practice: 'Real-time Chat App: WebSocket, presence, message history, TypeScript', goal: 'Deploy chat app, update GitHub', resources: null}
             ]},
             {week: 13, days: [
-                {day: 61, name: 'Monday', task: 'Polish GitHub repositories'},
-                {day: 62, name: 'Tuesday', task: 'Build portfolio website'},
-                {day: 63, name: 'Wednesday', task: 'Write 1st technical blog'},
-                {day: 64, name: 'Thursday', task: 'Write 2nd technical blog'},
-                {day: 65, name: 'Friday', task: 'Write 3rd blog, social profiles'}
+                {day: 61, name: 'Monday', learning: 'Portfolio Day (3.5 hours)', practice: 'Polish GitHub repos, write excellent READMEs, add screenshots/GIFs, pin projects', goal: 'Professional GitHub profile', resources: null},
+                {day: 62, name: 'Tuesday', learning: 'Portfolio Website Day (3.5 hours)', practice: 'Build portfolio (Next.js/HTML), add projects, about, skills, contact', goal: 'Launch portfolio site', resources: null},
+                {day: 63, name: 'Wednesday', learning: 'Content Creation (3.5 hours)', practice: 'Write 1st blog post (GraphQL journey), set up Dev.to/Hashnode, share', goal: 'Establish online presence', resources: null},
+                {day: 64, name: 'Thursday', learning: 'Content Creation (3.5 hours)', practice: 'Write 2nd blog post (microservices project), create gists, engage', goal: 'Build thought leadership', resources: null},
+                {day: 65, name: 'Friday', learning: 'Personal Brand Day (3.5 hours)', practice: 'Write 3rd blog post (optimization), create Twitter threads, join communities', goal: 'Content calendar for next 2 months', resources: null}
             ]},
             {week: 14, days: [
-                {day: 66, name: 'Monday', task: 'Create ATS-friendly resume'},
-                {day: 67, name: 'Tuesday', task: 'Optimize LinkedIn profile'},
-                {day: 68, name: 'Wednesday', task: 'Interview prep, LeetCode'},
-                {day: 69, name: 'Thursday', task: 'More LeetCode, STAR method'},
-                {day: 70, name: 'Friday', task: 'Job hunt strategy & tracker'}
+                {day: 66, name: 'Monday', learning: 'Resume Day (3.5 hours)', practice: 'Create ATS-friendly resume, quantify achievements, get feedback', goal: 'Perfect resume ready', resources: null},
+                {day: 67, name: 'Tuesday', learning: 'LinkedIn Optimization (3.5 hours)', practice: 'Update headline/summary, add projects, get recommendations, connect', goal: 'LinkedIn at 100%', resources: null},
+                {day: 68, name: 'Wednesday', learning: 'Interview Prep (3.5 hours)', practice: 'Solve 5 LeetCode Easy, practice explaining projects, common questions', goal: 'Comfortable with coding interviews', resources: null},
+                {day: 69, name: 'Thursday', learning: 'Interview Prep (3.5 hours)', practice: 'Solve 5 LeetCode Easy/Medium, study system design, practice STAR method', goal: 'Behavioral interview readiness', resources: null},
+                {day: 70, name: 'Friday', learning: 'Job Hunt Strategy (3.5 hours)', practice: 'List 50 target companies, research, prepare applications, set up tracker', goal: 'Complete job hunt game plan', resources: null}
             ]},
             {week: 15, days: [
-                {day: 71, name: 'Monday', task: 'Freelancing profiles setup'},
-                {day: 72, name: 'Tuesday', task: 'Open source contributions'},
-                {day: 73, name: 'Wednesday', task: 'Capstone project planning'},
-                {day: 74, name: 'Thursday', task: 'Capstone - Day 1'},
-                {day: 75, name: 'Friday', task: 'Capstone - Day 2'}
+                {day: 71, name: 'Monday', learning: 'Freelancing Setup (3.5 hours)', practice: 'Create Upwork/Fiverr profiles, apply to Toptal, create service packages', goal: 'Ready for freelance income', resources: null},
+                {day: 72, name: 'Tuesday', learning: 'Open Source Day (3.5 hours)', practice: 'Find 3 repos, make first contribution (docs/bug fix), engage', goal: 'Start open source journey', resources: null},
+                {day: 73, name: 'Wednesday', learning: 'Capstone Project Planning (3.5 hours)', practice: 'Choose idea, design architecture, plan features, set up repo', goal: 'Start impressive final project', resources: null},
+                {day: 74, name: 'Thursday', learning: 'Capstone Project (3.5 hours) - Day 1', practice: 'Backend architecture setup, Database design, Core API endpoints', goal: 'Solid foundation', resources: null},
+                {day: 75, name: 'Friday', learning: 'Capstone Project (3.5 hours) - Day 2', practice: 'Advanced features, Real-time functionality, Third-party integrations', goal: 'Feature-complete backend', resources: null}
             ]},
             {week: 15.4, days: [
-                {day: 76, name: 'Monday', task: 'Capstone - Complete & Deploy'},
-                {day: 77, name: 'Tuesday', task: '🚀 LAUNCH JOB HUNT!'}
+                {day: 76, name: 'Monday', learning: 'Capstone Project (3.5 hours) - Day 3', practice: 'Testing and optimization, Documentation, CI/CD setup, Deploy', goal: 'Production-ready capstone', resources: null},
+                {day: 77, name: 'Tuesday', learning: 'Final Touches (3.5 hours)', practice: 'Update portfolio, create demo video, write capstone blog, apply to first 10 jobs', goal: 'Official job hunt launch! 🚀', resources: null}
             ]}
         ];
 
@@ -750,11 +794,12 @@
 
         function initializeTracker() {
             loadProgress();
-            renderWeeks();
+            renderWeeks(); // This will now use the new weekData
             updateStats();
             loadNotes();
         }
 
+        // --- UPDATED renderWeeks function ---
         function renderWeeks() {
             const container = document.getElementById('weeksContainer');
             container.innerHTML = '';
@@ -780,13 +825,34 @@
                     
                     const isCompleted = completedDays.has(dayInfo.day);
                     
+                    // New template to show Learning, Practice, Goal, etc.
                     dayItem.innerHTML = `
-                        <div class="day-number">Day ${dayInfo.day}</div>
-                        <div class="day-name">${dayInfo.name}</div>
-                        <div class="day-task">${dayInfo.task}</div>
+                        <div class="day-info">
+                            <div class="day-number">Day ${dayInfo.day}</div>
+                            <div class="day-name">${dayInfo.name}</div>
+                        </div>
+                        <ul class="day-details">
+                            <li class="detail-item">
+                                <span class="detail-label">Learning:</span>
+                                <span class="detail-text">${dayInfo.learning}</span>
+                            </li>
+                            <li class="detail-item">
+                                <span class="detail-label">Practice:</span>
+                                <span class="detail-text">${dayInfo.practice}</span>
+                            </li>
+                            <li class="detail-item">
+                                <span class="detail-label">Goal:</span>
+                                <span class="detail-text">${dayInfo.goal}</span>
+                            </li>
+                            ${dayInfo.resources ? `
+                            <li class="detail-item">
+                                <span class="detail-label">Resources:</span>
+                                <span class="detail-text">${dayInfo.resources}</span>
+                            </li>` : ''}
+                        </ul>
                         <div class="checkbox-container">
-                            <input type="checkbox" class="checkbox" 
-                                ${isCompleted ? 'checked' : ''} 
+                            <input type="checkbox" class="checkbox"
+                                ${isCompleted ? 'checked' : ''}
                                 onchange="toggleDay(${dayInfo.day}, this.checked)">
                         </div>
                     `;
@@ -799,6 +865,7 @@
                 container.appendChild(weekSection);
             });
         }
+        // --- END UPDATED renderWeeks ---
 
         function toggleWeek(weekSection) {
             const content = weekSection.querySelector('.week-content');
@@ -821,13 +888,16 @@
             const completed = completedDays.size;
             const percentage = Math.round((completed / totalDays) * 100);
             const hours = Math.round(completed * 3.5);
-            const currentWeek = Math.ceil(completed / 5) || 1;
+            const currentDay = completed + 1 > totalDays ? totalDays : completed + 1;
+            const currentWeekInfo = weekData.find(w => w.days.some(d => d.day === currentDay));
+            const currentWeekDisplay = currentWeekInfo ? currentWeekInfo.week : 15.4;
+
 
             document.getElementById('daysCompleted').textContent = completed;
             document.getElementById('overallProgress').style.width = percentage + '%';
             document.getElementById('overallProgress').textContent = percentage + '%';
             document.getElementById('hoursInvested').textContent = hours;
-            document.getElementById('currentWeek').textContent = currentWeek;
+            document.getElementById('currentWeek').textContent = currentWeekDisplay;
 
             // Update projects completed
             const projectsCompleted = Object.values(projectProgress).filter(p => p === 'completed').length;
@@ -859,42 +929,43 @@
             saveProgress();
         }
 
+        // --- UPDATED skill progress logic ---
         function updateSkillProgress() {
             const completed = completedDays.size;
             
-            // GraphQL: Days 1-10
+            // GraphQL: Days 1-10 (10 days)
             const graphqlProgress = Math.min(100, Math.round((Math.min(completed, 10) / 10) * 100));
             document.getElementById('skill-graphql').style.width = graphqlProgress + '%';
 
-            // MongoDB: Days 11-20
-            const mongoProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 10, 10)) / 10) * 100));
+            // MongoDB: Days 11-15 (5 days)
+            const mongoProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 10, 5)) / 5) * 100));
             document.getElementById('skill-mongodb').style.width = mongoProgress + '%';
 
-            // PostgreSQL: Days 16-20
+            // PostgreSQL: Days 16-20 (5 days)
             const postgresProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 15, 5)) / 5) * 100));
             document.getElementById('skill-postgres').style.width = postgresProgress + '%';
 
-            // Security: Days 21-30
-            const securityProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 20, 10)) / 10) * 100));
+            // Security: Days 21-25 (5 days)
+            const securityProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 20, 5)) / 5) * 100));
             document.getElementById('skill-security').style.width = securityProgress + '%';
 
-            // Testing: Days 31-40
-            const testingProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 30, 10)) / 10) * 100));
+            // Testing: Days 31-35 (5 days)
+            const testingProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 30, 5)) / 5) * 100));
             document.getElementById('skill-testing').style.width = testingProgress + '%';
 
-            // DevOps: Days 36-40
+            // DevOps: Days 36-40 (5 days)
             const devopsProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 35, 5)) / 5) * 100));
             document.getElementById('skill-devops').style.width = devopsProgress + '%';
 
-            // Microservices: Days 41-50
-            const microProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 40, 10)) / 10) * 100));
+            // Microservices: Days 41-45 (5 days)
+            const microProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 40, 5)) / 5) * 100));
             document.getElementById('skill-microservices').style.width = microProgress + '%';
 
-            // System Design: Days 46-55
-            const systemProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 45, 10)) / 10) * 100));
+            // System Design: Days 46-50 (5 days)
+            const systemProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 45, 5)) / 5) * 100));
             document.getElementById('skill-systemdesign').style.width = systemProgress + '%';
 
-            // TypeScript: Days 56-60
+            // TypeScript: Days 56-60 (5 days)
             const tsProgress = Math.min(100, Math.round((Math.max(0, Math.min(completed - 55, 5)) / 5) * 100));
             document.getElementById('skill-typescript').style.width = tsProgress + '%';
         }
@@ -903,7 +974,10 @@
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            event.target.classList.add('active');
+            // Use event.currentTarget instead of event.target to ensure it's the button
+            if (event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
             document.getElementById(tabName).classList.add('active');
         }
 
@@ -923,14 +997,34 @@
                 completedDays = new Set(data.completedDays);
                 projectProgress = data.projectProgress || {};
                 
-                // Restore project checkboxes
+                // Restore project checkboxes and status
                 Object.keys(projectProgress).forEach(projectId => {
                     const statusElement = document.getElementById(projectId + 'Status');
-                    if (statusElement && projectProgress[projectId] === 'completed') {
+                    const card = statusElement ? statusElement.closest('.project-card') : null;
+                    if (!card) return;
+
+                    const checkboxes = card.querySelectorAll('.project-checklist .checkbox');
+                    const totalCount = checkboxes.length;
+
+                    if (projectProgress[projectId] === 'completed') {
+                        checkboxes.forEach(cb => cb.checked = true);
                         statusElement.textContent = 'Completed';
                         statusElement.className = 'project-status status-completed';
+                    } else if (projectProgress[projectId] === 'in-progress') {
+                        // This part is tricky as we don't save *which* boxes are checked.
+                        // We'll restore the status, but the checkboxes won't be pre-filled
+                        // unless all are checked (as in the 'completed' case).
+                        // A more complex save/load would store the state of each checkbox.
+                        statusElement.textContent = 'In Progress'; // Can't know (x/y) on load
+                        statusElement.className = 'project-status status-in-progress';
+                    } else {
+                        statusElement.textContent = 'Not Started';
+                        statusElement.className = 'project-status status-not-started';
                     }
                 });
+                
+                // We need to call updateSkillProgress *after* loading
+                updateSkillProgress();
             }
         }
 
@@ -966,7 +1060,7 @@ Generated: ${new Date().toLocaleDateString()}
 ✅ Days Completed: ${completed}/77 (${percentage}%)
 💼 Projects Completed: ${projectsCompleted}/6
 ⏰ Hours Invested: ${Math.round(completed * 3.5)}/270
-📅 Current Week: ${Math.ceil(completed / 5) || 1}/15.4
+📅 Current Week: ${document.getElementById('currentWeek').textContent}/15.4
 
 💼 PROJECT STATUS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
